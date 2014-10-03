@@ -1,0 +1,29 @@
+{
+  "name": "peercast",
+  "version": "0.0.0",
+  "description": "torrent-stream + chromecast",
+  "main": "index.js",
+  "bin": {
+    "peercast": "./bin.js"
+  },
+  "dependencies": {
+    "castv2-client": "0.0.5",
+    "mdns": "^2.2.0",
+    "network-address": "0.0.4",
+    "peerflix": "^0.19.0",
+    "prettysize": "0.0.3",
+    "read-torrent": "^1.0.0",
+    "single-line-log": "^0.4.1"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mafintosh/peercast.git"
+  },
+  "author": "Mathias Buus (@mafintosh)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mafintosh/peercast/issues"
+  },
+  "homepage": "https://github.com/mafintosh/peercast"
+}
