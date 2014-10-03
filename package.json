@@ -1,6 +1,6 @@
 {
   "name": "peercast",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "torrent-stream + chromecast",
   "main": "index.js",
   "bin": {
