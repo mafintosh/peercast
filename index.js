@@ -1,9 +1,6 @@
-var Client = require('castv2-client').Client
-var DefaultMediaReceiver = require('castv2-client').DefaultMediaReceiver
-var mdns = require('mdns')
 var peerflix = require('peerflix')
 var network = require('network-address')
-var events = require('events')
+var player = require('chromecast-player');
 
 process.on('SIGINT', function() {
   // we're doing some heavy lifting so it can take some time to exit... let's
@@ -14,65 +11,23 @@ process.on('SIGINT', function() {
 
 module.exports = function(torrent, opts) {
   if (!opts) opts = {}
-
-  if (!opts.type) {
-    opts.type = function() {
-      return 'video/mp4'
-    }
-  }
-
   var engine = peerflix(torrent, opts)
-  var browser = mdns.createBrowser(mdns.tcp('googlecast'))
 
-  browser.on('serviceUp', function(service) {
-    var host = service.addresses[0]
-    var client = new Client()
-
-    engine.server.on('listening', function() {
-      var addr = 'http://'+network()+':'+engine.server.address().port
-
-      client.connect(host, function(err) {
-        if (err) return engine.emit('error', err)
-
-        engine.emit('chromecast-connected')
-
-        client.launch(DefaultMediaReceiver, function(err, player) {
-          if (err) return engine.emit('error', err)
-
-          var media = {
-            contentId: addr,
-            contentType: 'video/mp4',
-            streamType: 'BUFFERED', // or LIVE
-            metadata: {
-              type: 0,
-              metadataType: 0,
-              title: engine.server.index.name,
-              images: []
-            }
-          }
-
-          player.on('status', function(status) {
-            engine.emit('chromecast-status', status)
-          })
-
-          engine.emit('chromecast-player', player)
-
-          player.load(media, { autoplay: true }, function(err) {
-            if (err) return engine.emit('error', err)
-            engine.emit('chromecast-playing', engine.server.index)
-          })
-        })
+  engine.server.on('listening', function() {
+    var addr = 'http://'+network()+':'+engine.server.address().port
+    player({
+      path: addr,
+      type: opts.type || 'video/mp4',
+      metadata: { title: engine.server.index.name }
+    }, function(err, p) {
+      if (err) return engine.emit('error', err)
+      p.on('status', function(status) {
+        engine.emit('chromecast-status', status)
       })
-    })
-
-    client.on('error', function(err) {
-      client.close()
-    })
-
-    browser.stop()
+      engine.emit('chromecast-player', p)
+      engine.emit('chromecast-playing', engine.server.index)
+    });
   })
-
-  browser.start()
 
   return engine
 }
