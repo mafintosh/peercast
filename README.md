@@ -3,7 +3,7 @@
 torrent-stream + chromecast
 
 ```
-npm install peercast
+npm install -g peercast
 ```
 
 ## Usage
