@@ -6,13 +6,16 @@ var peerflix = require('peerflix')
 var network = require('network-address')
 var events = require('events')
 
-module.exports = function(torrent) {
-  var engine = peerflix(torrent, {
-    type: function() {
+module.exports = function(torrent, opts) {
+  if (!opts) opts = {}
+
+  if (!opts.type) {
+    opts.type = function() {
       return 'video/mp4'
     }
-  })
+  }
 
+  var engine = peerflix(torrent, opts)
   var browser = mdns.createBrowser(mdns.tcp('googlecast'))
 
   browser.on('serviceUp', function(service) {
