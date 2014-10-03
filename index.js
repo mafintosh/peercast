@@ -1,7 +1,6 @@
 var Client = require('castv2-client').Client
 var DefaultMediaReceiver = require('castv2-client').DefaultMediaReceiver
 var mdns = require('mdns')
-var rangeParser = require('range-parser')
 var peerflix = require('peerflix')
 var network = require('network-address')
 var events = require('events')
